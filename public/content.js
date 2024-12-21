@@ -24,14 +24,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 function scanProducts() {
   const priceElements = Array.from(
     document.querySelectorAll(
-      'a[href^="/vp/products/"] > span[class*="price"]:not([class*="discounted-price"])'
+      'a[href^="/vp/products/"] span[class*="price"]:not([class*="discounted-price"])'
     )
   ).map((priceTag) => priceTag);
 
   const filteredElements = new Map();
 
   priceElements.forEach((priceTag) => {
-    const price = Number(priceTag.innerText.replace("원", "").replace(",", ""));
+    const price = Number(
+      priceTag.innerText.replace("원", "").replaceAll(",", "")
+    );
     const product = priceTag.closest("a");
     filteredElements.set(product, price);
   });
