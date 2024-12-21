@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function messageToScan() {
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "querySelector") {
@@ -14,18 +16,7 @@ export default function App() {
   return (
     <div>
       <h1>Hello, world!</h1>
-      <button
-        onClick={() => {
-          chrome.runtime.sendMessage(
-            { action: "querySelector" },
-            (response) => {
-              console.log("Received Response:", response);
-            }
-          );
-        }}
-      >
-        Test
-      </button>
+      <Link to="/login">login</Link>
     </div>
   );
 }
