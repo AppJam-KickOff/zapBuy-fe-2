@@ -6,7 +6,7 @@
     "default_popup": "../index.html"
   },
   "icons": {
-    "128": "logo-128.png"
+    "256": "logo-256.png"
   },
   "permissions": ["scripting", "activeTab", "webRequest"],
   "host_permissions": ["https://*.coupang.com/*"],

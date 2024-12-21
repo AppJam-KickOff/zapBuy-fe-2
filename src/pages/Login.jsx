@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Information from "../components/information";
+import LoginSection from "../components/LoginSection";
 
 export default function Login() {
   const [login, setLogin] = useState(true);
@@ -28,7 +28,7 @@ export default function Login() {
     }
   }
   function ClickOk() {
-    if (ok=="") {
+    if (ok == "") {
       alert("인증번호를 입력하세요.");
     } else {
       alert("인증번호를 확인했습니다.");
@@ -56,7 +56,7 @@ export default function Login() {
         </button>
       </div>
       {login ? (
-        <Information />
+        <LoginSection />
       ) : (
         <>
           <div className="w-full px-2 mt-2">
@@ -128,7 +128,6 @@ export default function Login() {
             type="password"
             name="password"
             className="border border-gray-400 w-96 h-10 rounded-md mt-2 px-1"
-
           />
           <button className="bg-black text-sm text-white rounded-md w-96 h-11 mt-6">
             회원가입
