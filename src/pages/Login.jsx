@@ -1,12 +1,21 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import LoginSection from "../components/LoginSection";
 
 export default function Login() {
   const [login, setLogin] = useState(true);
   const [signup, setSignup] = useState(false);
-  const [email, setEmail] = useState("");
   const [confirm, setConfirm] = useState(false);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  //인증번호호
   const [ok, setOk] = useState("");
+  const [name, setName] = useState("");
+  const [age, setAge] = useState(0);
+  const [gender, setGender] = useState("");
+  const [income, setIncome] = useState(0);
+  const [time, setTime] = useState(0);
 
   function ChangeLogin() {
     setLogin(true);
@@ -18,22 +27,68 @@ export default function Login() {
     setSignup(true);
   }
 
+  //인증번호 전송송
   function handleForwarding() {
     if (!email.trim()) {
       alert("Email을 작성하세요.");
     } else {
-      alert("인증번호가 전송되었습니다.");
+      fetch("serverUrl/user/sendEmail", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("인증번호 전송 실패");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("인증번호 전송 중 오류가 발생했습니다.");
+        });
       setConfirm(true);
-      setEmail("");
     }
   }
 
-  function ClickOk() {
-    if (ok === "") {
-      alert("인증번호를 입력하세요.");
-    } else {
-      alert("인증번호를 확인했습니다.");
+  function submit() {
+    if (
+      !email.trim() ||
+      !password.trim() ||
+      !passwordConfirm.trim() ||
+      !name.trim() ||
+      !age
+    ) {
+      return;
     }
+    if (password !== passwordConfirm) {
+      alert("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+    fetch("serverUrl/user/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        username: username,
+        password: password,
+        age: age,
+        token: ok,
+        gender: gender === "남자" ? true : false,
+        money: income,
+        time: time,
+      }),
+    }).then((response) => {
+      if (response.ok) {
+        setLogin(true);
+        setSignup(false);
+      } else {
+        alert("회원가입 실패");
+      }
+    });
   }
 
   return (
@@ -70,7 +125,7 @@ export default function Login() {
       {login ? (
         <LoginSection />
       ) : (
-        <div className="w-96 flex flex-col mt-4 space-y-4">
+        <div className="w-96 flex flex-col">
           <div className="flex flex-col">
             <label htmlFor="name" className="text-sm">
               이름
@@ -80,7 +135,8 @@ export default function Login() {
               name="name"
               id="name"
               className="border border-gray-400 w-full h-10 rounded-md px-2"
-              placeholder="홍길동"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div className="flex flex-col">
@@ -120,19 +176,41 @@ export default function Login() {
               <input
                 type="text"
                 name="certification"
-                className="border border-gray-400 w-3/4 h-10 rounded-md px-2"
+                className="border border-gray-400 w-full h-10 rounded-md px-2"
                 placeholder="6자리 숫자"
                 value={ok}
                 onChange={(e) => setOk(e.target.value)}
               />
-              <button
-                className="bg-black text-white w-1/4 h-10 rounded-md flex items-center justify-center"
-                onClick={ClickOk}
-              >
-                확인
-              </button>
             </div>
           )}
+          <div className="flex gap-4">
+            <div className="flex flex-col w-1/2">
+              <label htmlFor="password" className="text-sm">
+                비밀번호
+              </label>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                className="border border-gray-400 h-10 rounded-md px-2"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <div className="flex flex-col w-[174px]">
+              <label htmlFor="password-confirm" className="text-sm">
+                비밀번호 확인
+              </label>
+              <input
+                type="password"
+                name="password-confirm"
+                id="password-confirm"
+                className="border border-gray-400 h-10 rounded-md px-2"
+                value={passwordConfirm}
+                onChange={(e) => setPasswordConfirm(e.target.value)}
+              />
+            </div>
+          </div>
           <div className="flex gap-4">
             <div className="flex flex-col w-1/2">
               <label htmlFor="age" className="text-sm">
@@ -143,6 +221,8 @@ export default function Login() {
                 name="age"
                 id="age"
                 className="border border-gray-400 h-10 rounded-md px-2"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
               />
             </div>
             <div className="flex flex-col w-1/2">
@@ -153,6 +233,8 @@ export default function Login() {
                 name="gender"
                 id="gender"
                 className="border border-gray-400 h-10 rounded-md px-2"
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
               >
                 <option value="">성별 선택</option>
                 <option value="male">남자</option>
@@ -171,6 +253,8 @@ export default function Login() {
                 name="income"
                 id="income"
                 className="border border-gray-400 h-10 rounded-md"
+                value={income}
+                onChange={(e) => setIncome(e.target.value)}
               />
             </div>
             <div className="flex flex-col flex-grow">
@@ -182,6 +266,8 @@ export default function Login() {
                 name="time"
                 id="time"
                 className="border border-gray-400 h-10 rounded-md"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
               />
             </div>
           </div>
