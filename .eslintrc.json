@@ -3,5 +3,11 @@
     "browser": true,
     "es6": true,
     "webextensions": true
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
   }
 }

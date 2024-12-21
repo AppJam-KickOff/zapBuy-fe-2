@@ -5,7 +5,7 @@ function messageToScan() {
       const element = document.querySelector("body");
       console.log("Selected Element:", element);
       // 필요한 작업 수행
-      sendResponse({ status: "success", elementText: element?.innerText });
+      sendResponse({ status: "success", elementText: element.innerText });
     }
   });
 }
